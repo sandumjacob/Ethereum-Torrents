@@ -6,74 +6,105 @@
     <title>Torrents on Ethereum</title>
 </head>
 <body>
-<h1>This is a header</h1>
+<dt id="TorrentNameHeader0">Name of Torrent</dt>
+<dd id="TorrentMagnetLink0">Magnet Link</dd>
+<dt id="TorrentNameHeader1">Name of Torrent</dt>
+<dd id="TorrentMagnetLink1">Magnet Link</dd>
+<dt id="TorrentNameHeader2">Name of Torrent</dt>
+<dd id="TorrentMagnetLink2">Magnet Link</dd>
+<dt id="TorrentNameHeader3">Name of Torrent</dt>
+<dd id="TorrentMagnetLink3">Magnet Link</dd>
+<dt id="TorrentNameHeader4">Name of Torrent</dt>
+<dd id="TorrentMagnetLink4">Magnet Link</dd>
+<dt id="TorrentNameHeader5">Name of Torrent</dt>
+<dd id="TorrentMagnetLink5">Magnet Link</dd>
+<dt id="TorrentNameHeader6">Name of Torrent</dt>
+<dd id="TorrentMagnetLink6">Magnet Link</dd>
+<dt id="TorrentNameHeader7">Name of Torrent</dt>
+<dd id="TorrentMagnetLink7">Magnet Link</dd>
+<dt id="TorrentNameHeader8">Name of Torrent</dt>
+<dd id="TorrentMagnetLink8">Magnet Link</dd>
+<dt id="TorrentNameHeader9">Name of Torrent</dt>
+<dd id="TorrentMagnetLink9">Magnet Link</dd>
 </body>
 </html>
 <script type="text/javascript">
-        let web3js;
-        if (typeof window.web3 !== "undefined") {
-            console.log("Web3 injected");
-            web3js = new Web3(window.web3.currentProvider);
-            console.log("Web3 Hooked");
-            console.log(web3js.version);
-        } else {
-            console.log("No web3 injected");
+
+    let web3js;
+    if (typeof window.web3 !== "undefined") {
+        console.log("Web3 injected");
+        web3js = new Web3(window.web3.currentProvider);
+        console.log("Web3 Hooked");
+        console.log(web3js.version);
+    } else {
+        console.log("No web3 injected");
+    }
+    //Contract ABI
+    var abi = [
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "name": "torrents",
+            "outputs": [
+                {
+                    "name": "magnetLink",
+                    "type": "string"
+                },
+                {
+                    "name": "name",
+                    "type": "string"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "magnetLink",
+                    "type": "string"
+                }
+            ],
+            "name": "addTorrent",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
         }
-        //Contract ABI
-        var abi = [
-            {
-                "constant": true,
-                "inputs": [
-                    {
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "torrents",
-                "outputs": [
-                    {
-                        "name": "magnetLink",
-                        "type": "string"
-                    },
-                    {
-                        "name": "name",
-                        "type": "string"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "constant": false,
-                "inputs": [
-                    {
-                        "name": "name",
-                        "type": "string"
-                    },
-                    {
-                        "name": "magnetLink",
-                        "type": "string"
-                    }
-                ],
-                "name": "addTorrent",
-                "outputs": [],
-                "payable": false,
-                "stateMutability": "nonpayable",
-                "type": "function"
+    ];
+    //Contract Address (Ropsten right now)
+    var contractAddress = "0xfC293d5e9cDCDe35343bA5eE3c8194Ec80C4AF45";
+    //Contract
+    var TorrentsContract = web3js.eth.contract(abi);
+    //Instance of contract in blockchain
+    var TorrentsInstance = TorrentsContract.at(contractAddress);
+    //Call getter method of the torrents variable to get the torrent at index 0
+    var array = [];
+    for (var index = 0; index < 9; index++) {
+        TorrentsInstance.torrents(index, function (error, result) {
+            if (!error) {
+                console.log("index = " + index);
+                array.push(result);
+                document.getElementById("TorrentMagnetLink" + index).innerHTML = result[1];
+                document.getElementById("TorrentNameHeader" + index).innerHTML = result[0];
             }
-        ];
-        //Contract Address (Ropsten right now)
-        var contractAddress = "0xfC293d5e9cDCDe35343bA5eE3c8194Ec80C4AF45";
-        //Contract
-        var TorrentsContract = web3js.eth.contract(abi);
-        //Instance of contract in blockchain
-        var TorrentsInstance = TorrentsContract.at(contractAddress);
-        //Call getter method of the torrents variable to get the torrent at index 0
-        TorrentsInstance.torrents(0, function (error, result) {
-            if (!error)
-                console.log(result);
             else
-                console.error(error);
+                console.error("ERROR" + error);
+                //index--;
         });
+    }
+    console.log(array.length);
+    //document.getElementById("TorrentMagnetLink0").innerHTML = array[0][1];
+    //document.getElementById("TorrentNameHeader0").innerHTML = result[0][0];
 </script>
